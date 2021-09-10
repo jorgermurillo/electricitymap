@@ -41,12 +41,19 @@ def save_parser_result(result, zone,data_type):
     with open(fullpath , 'a', buffering=1) as csv_file:
         
 
-
+        pp.pprint(result)
         for elem in result:
             date_str = str(elem["datetime"])
             fields = ["datetime"]
             results_list_tmp = []
-            if isinstance(elem[data_type],dict):
+            
+            # Some parsers return the key, value pair as ("value": XXX), instead of ($data_type: XXX)
+            # Instead of changing the parsers, which could be many, I handle the edge case here:
+
+            if elem.get(data_type, None) == None and elem.get("value", None) !=None:
+                elem[data_type] = elem["value"]
+
+            if isinstance(elem.get(data_type,None),dict) :#or isinstance(elem.get("value",None),dict):
                 fields.extend([str(s) for s in elem[data_type].keys()] )
                 if os.path.getsize(fullpath)  ==0:
                     csv_file.write( ",".join(fields) +"\n" )
