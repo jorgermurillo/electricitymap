@@ -187,6 +187,9 @@ def call_parsers(zone, target_datetime):
 
 
     pp.pprint(min_latest_times)
+    min_time = sorted(min_latest_times.values())[0]
+
+    print(min_time)
 
 '''
 @click.command()
