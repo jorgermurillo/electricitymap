@@ -148,6 +148,7 @@ def call_parsers(zone, target_datetime):
         if parser != None:
             datatypes.append(data_type)
     #print(datatypes)
+    pp = pprint.PrettyPrinter(width=120)
 
     min_latest_times = {}
     responses = {}
@@ -185,7 +186,7 @@ def call_parsers(zone, target_datetime):
             traceback.print_tb(e.__traceback__)
 
 
-    print(min_latest_times)
+    pp.pprint(min_latest_times)
 
 '''
 @click.command()
