@@ -160,7 +160,7 @@ def call_parsers(zone, target_datetime):
 
             #Convert all times in the response to UTC
             for elem in res:
-                utc_datetime = elem['datetime'].astimezone(tz=None).replace(minute=0, second=0, microsecond=0)
+                utc_datetime = elem['datetime'].astimezone(tz=None)
                 elem['datetime'] = utc_datetime
 
             # Save the repsonse
@@ -173,7 +173,7 @@ def call_parsers(zone, target_datetime):
 
             # Get the latest time from each dataset, and round it down to the day and hour.
 
-            latest = res[-1]['datetime']
+            latest = res[-1]['datetime'].replace(minute=0, second=0, microsecond=0)
             min_latest_times[data_type] = latest
             #save_parser_result(res, zone, data_type)
 
@@ -190,6 +190,11 @@ def call_parsers(zone, target_datetime):
     min_time = sorted(min_latest_times.values())[0]
 
     print(min_time)
+
+    for data_type, res_list in responses.items():
+        for elem in res_list:
+            if min_time == elem['datetime'].replace(minute=0, second=0, microsecond=0):
+                print(elem)
 
 '''
 @click.command()
