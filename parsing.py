@@ -53,6 +53,10 @@ def save_parser_result(result, zone,data_type):
             if elem.get(data_type, None) == None and elem.get("value", None) !=None:
                 elem[data_type] = elem["value"]
 
+            # data type "productionPerModeForecast" returns a dict with key equal to "production"
+            if data_type=="productionPerModeForecast" and elem.get("production", None) !=None:
+                elem[data_type] = elem["production"]
+
             if isinstance(elem.get(data_type,None),dict) :#or isinstance(elem.get("value",None),dict):
                 fields.extend([str(s) for s in elem[data_type].keys()] )
                 if os.path.getsize(fullpath)  ==0:
