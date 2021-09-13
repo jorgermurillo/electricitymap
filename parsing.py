@@ -43,7 +43,9 @@ def save_parser_result(result, zone,data_type):
 
         pp.pprint(result)
         for elem in result:
-            date_str = str(elem["datetime"])
+
+            utc_datetime = elem['datetime'].astimezone(tz=None)
+            date_str = str(utc_datetime)
             fields = ["datetime"]
             results_list_tmp = []
             
