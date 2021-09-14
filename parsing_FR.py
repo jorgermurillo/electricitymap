@@ -16,6 +16,8 @@ import click
 import traceback
 import os
 
+
+from collections import Counter
 from electricitymap.contrib.parsers.lib.parsers import PARSER_KEY_TO_DICT
 from parsers.lib.quality import (
     validate_consumption,
@@ -27,6 +29,10 @@ from parsers.lib.quality import (
 CONFIG_FILE = configparser.ConfigParser()
 CONFIG_FILE.read("parsers.config")
 print(CONFIG_FILE)
+
+
+FIELDS = ""
+
 
 logger = logging.getLogger(__name__)
 logging.basicConfig(level=logging.DEBUG, format="%(asctime)s %(levelname)-8s %(name)-30s %(message)s")
@@ -192,9 +198,24 @@ def call_parsers(zone, target_datetime):
     print(min_time)
 
     for data_type, res_list in responses.items():
-        for elem in res_list:
-            if min_time == elem['datetime'].replace(minute=0, second=0, microsecond=0):
-                print(elem)
+        print("Datatype: %s"%(data_type))
+        
+        results = list(filter( lambda elem: min_time == elem['datetime'].replace(minute=0, second=0, microsecond=0), res_list))
+        
+        if data_type == "production":
+            counters = dict(sum([Counter(x["production"]) for x in results]  , Counter())) 
+            pp.pprint(counters)
+            old_keys = list(counters.keys())
+            for k in old_keys:
+                new_key = "power_production_%s_avg"%(k)
+                counters[new_key] = counters[k]
+                counters.pop(k)
+            pp.pprint(counters)
+        else:
+            pp.pprint(results)
+            
+    
+
 
 '''
 @click.command()
